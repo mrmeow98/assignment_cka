@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node01
+      containers:
+      - name: phpmyadmin
+        image: phpmyadmin:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: PMA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: pma-config
+              key: PMA_HOST
+        - name: PMA_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: pma-config
+              key: PMA_PORT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin
+  namespace: development
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: phpmyadmin
+  type: ClusterIP
