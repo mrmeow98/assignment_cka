@@ -17,7 +17,7 @@ spec:
         kubernetes.io/hostname: node01
       containers:
       - name: mysql
-        image: elestio/mysql:latest
+        image: mysql:latest
         ports:
         - containerPort: 3306
           name: mysql
